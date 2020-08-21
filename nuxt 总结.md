@@ -27,7 +27,6 @@ $ yarn create nuxt-app <项目名>
    ```js
    // 全局axios
    yarn add @nuxtjs/axios -S
-   
    // nuxt.config.js
    export default {
        modules: [
@@ -54,6 +53,24 @@ $ yarn create nuxt-app <项目名>
        pulgins: [
            {src: '@/plugins/request'}
        ]
+   }
+   
+   // 将方法或变量全局注入
+   //plugins文件夹下新建my-inject.js
+   export default (({app}, inject) => {
+       inject('myInject', () => {console.log('全局注入')})
+   })
+   // nuxt.config.js
+   export default {
+       plugins:['@/plugins/my-inject.js']
+   }
+   // 在context中使用
+   asyncData(context) {
+       context.app.$myInject()
+   }
+   // vue实例中使用,通过this调用
+   created() {
+       this.$myInject()
    }
    
    // 代理
@@ -116,6 +133,9 @@ $ yarn create nuxt-app <项目名>
            'cookie-universal-nuxt'
        ]
    }
+   // 使用 vue实例中通过this.$cookies
+   // context 中通过context.app.$cookies
+   // 更多方法访问 https://www.npmjs.com/package/cookie-universal-nuxt
    
    // 环境配置
    yarn add cross-env -D
@@ -134,6 +154,16 @@ $ yarn create nuxt-app <项目名>
         }
      }
    
+   // 自定义端口号
+   package.json 中添加
+   "config": {
+    "nuxt": {
+         "host": "0.0.0.0",
+         "port": "9999" // 自定义修改
+       }
+     }
+   
+   
    // 线上环境去console
    yarn add babel-plugin-transform-remove-console -D
    // nuxt.config.js
@@ -150,12 +180,12 @@ $ yarn create nuxt-app <项目名>
            babel: {
                'pulgins': myPlugins
            },
-           // 配置打包后路径,根据情况写
+           // 配置打包后路径,根据情况写,默认/_nuxt/
            publicPath: ''
        }
    }
    
    
    ```
-
+   
    
